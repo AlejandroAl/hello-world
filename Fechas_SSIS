@@ -1,0 +1,7 @@
+(DT_WSTR, 4) YEAR(DATEADD("day",-1,GETDATE())) + "-"
++RIGHT("0" + (DT_WSTR, 2) DATEPART("MM", DATEADD("day", -1, GETDATE())),2) + "-"
++RIGHT("0" + (DT_WSTR, 2) DATEPART("DD", DATEADD("day", -1, GETDATE())),2)
+
+
+RIGHT((DT_WSTR, 4) YEAR(DATEADD("day",-1,GETDATE())),2) +RIGHT("0" + (DT_WSTR, 2) DATEPART("MM", DATEADD("day", -1, GETDATE())),2) 
++RIGHT("0" + (DT_WSTR, 2) DATEPART("DD", DATEADD("day", -1, GETDATE())),2)
