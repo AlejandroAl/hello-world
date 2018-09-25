@@ -1,0 +1,18 @@
+POST index/type/_update_by_query
+{
+  "script": {
+    "source": "ctx._source.estatus_carga = params.estatus_carga; ctx._source.estatus_campania = params.estatus_campania; ctx._source.fecha_activacion_campania = params.fecha_activacion_campania; ctx._source.duracion_campania = params.duracion_campania",
+    "lang": "painless",
+    "params": {
+      "estatus_carga": "1",
+      "estatus_campania": "1",
+      "fecha_activacion_campania": "2018-09-24T11:54:00.760",
+      "duracion_campania": "100"
+    }
+  },
+  "query": {
+    "match": {
+      "id_campania.keyword": "180923_75_TP-CC"
+    }
+  }
+}
