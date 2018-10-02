@@ -1,0 +1,103 @@
+
+POST siva_relojes/_search
+{
+  "size":0,
+  "query": {
+        "bool": {
+          "must": [
+            {
+              "query_string": {
+                "query": "()",
+                "default_operator": "OR"
+              }
+            },
+            {
+              "match": {
+                "marca_reloj.keyword": "ROLEX"
+              }
+            }
+          ]
+        }
+  },
+  "aggs": {
+    "my_buckets": {
+      "composite": {
+        "size": 5,
+        "sources": [
+          {
+            "marca": {
+              "terms": {
+                "field": "marca_reloj.keyword"
+              }
+            }
+          },
+          {
+            "modelo": {
+              "terms": {
+                "field": "modelo_linea_reloj.keyword"
+              }
+            }
+          },
+          {
+            "marca": {
+              "terms": {
+                "field": "marca_reloj.keyword"
+              }
+            }
+          }
+        ]
+      },
+      "aggregations": {
+        "Documents":{
+          "top_hits": {
+             "size": 1,
+                "_source": [
+                  "id_reloj",
+                  "anioFabricacion_reloj",
+                  "codigo_reloj",
+                  "estado_reloj",
+                  "fecha_modificacion",
+                  "genero_reloj",
+                  "modelo_linea_reloj",
+                  "marca_reloj",
+                  "material_caja",
+                  "material_correa",
+                  "material_cristal",
+                  "pagina_reloj",
+                  "precio_auxiliar",
+                  "referencia_reloj",
+                  "precio_reloj",
+                  "tipo_cuerda",
+                  "titulo_reloj",
+                  "ubicacionImagen_reloj"
+                ],
+                "sort": [
+                  {
+                    "marca_reloj.keyword": "asc"
+                  },
+                  {
+                    "modelo_linea_reloj.keyword": "asc"
+                  },
+                  "_score"
+                ]
+          }
+        },
+        "max_price": {
+          "max": {
+            "field": "precio_reloj"
+          }
+        },
+        "min_price": {
+          "min": {
+            "field": "precio_reloj"
+          }
+        },
+        "avg_price": {
+          "avg": {
+            "field": "precio_reloj"
+          }
+        }
+      }
+    }
+  }
+}
