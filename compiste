@@ -1,56 +1,64 @@
 
-POST siva_relojes/_search
+PUT _scripts/paginacion_sivaRelojes_test
 {
-  "size":0,
-  "query": {
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "size": 0,
+      "query": {
         "bool": {
           "must": [
             {
               "query_string": {
-                "query": "(modelo_linea_reloj.keyword:SUBMARINER)",
+                "query": "{{params}}",
                 "default_operator": "OR"
               }
             },
             {
               "match": {
-                "marca_reloj.keyword": "ROLEX"
+                "marca_reloj.keyword": "{{marca}}"
               }
             }
           ]
         }
-  },
-  "aggs": {
-    "my_buckets": {
-      "composite": {
-        "size": 5,
-        "sources": [
-          {
-            "marca": {
-              "terms": {
-                "field": "marca_reloj.keyword"
-              }
-            }
-          },
-          {
-            "modelo": {
-              "terms": {
-                "field": "modelo_linea_reloj.keyword"
-              }
-            }
-          },
-          {
-            "referencia": {
-              "terms": {
-                "field": "referencia_reloj.keyword"
-              }
-            }
-          }
-        ]
       },
-      "aggregations": {
-        "Documents":{
-          "top_hits": {
-             "size": 1,
+      "aggs": {
+        "my_buckets": {
+          "composite": {
+            "size": 5,
+            "sources": [
+              {
+                "marca": {
+                  "terms": {
+                    "field": "marca_reloj.keyword"
+                  }
+                }
+              },
+              {
+                "modelo": {
+                  "terms": {
+                    "field": "modelo_linea_reloj.keyword"
+                  }
+                }
+              },
+              {
+                "referencia": {
+                  "terms": {
+                    "field": "referencia_reloj.keyword"
+                  }
+                }
+              }
+            ],
+            "after": {
+              "marca": "{{after_marca}}",
+              "modelo": "{{after_modelo}}",
+              "referencia": "{{after_referencia}}"
+            }
+          },
+          "aggregations": {
+            "Documents": {
+              "top_hits": {
+                "size": 1,
                 "_source": [
                   "id_reloj",
                   "anioFabricacion_reloj",
@@ -80,21 +88,34 @@ POST siva_relojes/_search
                   },
                   "_score"
                 ]
+              }
+            },
+            "max_price": {
+              "max": {
+                "field": "precio_reloj"
+              }
+            },
+            "min_price": {
+              "min": {
+                "field": "precio_reloj"
+              }
+            },
+            "avg_price": {
+              "avg": {
+                "field": "precio_reloj"
+              }
+            }
           }
         },
-        "max_price": {
-          "max": {
-            "field": "precio_reloj"
+        "totalGrupos": {
+          "cardinality": {
+            "field": "referencia_reloj.keyword",
+            "precision_threshold": 100
           }
         },
-        "min_price": {
-          "min": {
-            "field": "precio_reloj"
-          }
-        },
-        "avg_price": {
-          "avg": {
-            "field": "precio_reloj"
+        "Resultados_busqueda": {
+          "value_count": {
+            "field": "id_reloj.keyword"
           }
         }
       }
