@@ -7,7 +7,7 @@ POST siva_relojes/_search
           "must": [
             {
               "query_string": {
-                "query": "()",
+                "query": "(modelo_linea_reloj.keyword:SUBMARINER)",
                 "default_operator": "OR"
               }
             },
@@ -39,9 +39,9 @@ POST siva_relojes/_search
             }
           },
           {
-            "marca": {
+            "referencia": {
               "terms": {
-                "field": "marca_reloj.keyword"
+                "field": "referencia_reloj.keyword"
               }
             }
           }
